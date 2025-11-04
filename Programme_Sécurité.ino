@@ -7,7 +7,8 @@ char code_coffre[] = {'6','4','7','1'};
 const byte ROWS = 4; 
 //Définition du nombre de colonnes du pavé numérique
 const byte COLS = 3; 
-char keys[ROWS][COLS] = {
+char keys[ROWS][COLS] = 
+{
   {'1','2','3'},
   {'4','5','6'},
   {'7','8','9'},
@@ -39,7 +40,8 @@ const int led_V5 = 18;
 const int led_V6 = 19;
 
 //Questions et réponses correctes
-const char questions[4] = {
+const char questions[4] = 
+{
   "Quelle est la capitale de la France ? (1: Paris, 2: Lyon, 3: Marseille, 4: Toulouse) \n",
   "Quelle est votre nationalite ? (1: Russe, 2: Anglaise, 3: Francaise, 4: Allemande) \n",
   "Quel est le plus grand pays en superficie ? (1: Chine, 2: Etats-Unis, 3: Canada, 4: Russie) \n",
@@ -74,7 +76,6 @@ void setup()
   pinMode(led_V5, OUTPUT);
   pinMode(led_V6, OUTPUT);
   resetLeds();
-  	
 }
 
 void loop()
@@ -163,24 +164,24 @@ void loop()
 
 void secu_1()
 {
-  if (MA1_valide == false)
-  {
+	if (MA1_valide == false)
+	{
     MA1();
-    if (MA3_valide == false)
-    {
-    	digitalWrite(led_V2, HIGH);
-    	digitalWrite(led_V3, HIGH);
-    	MA3();
-    		if (MA3_valide == true)
-    		{
-      			digitalWrite(led_V4, HIGH);
+    	if (MA3_valide == false)
+    	{
+    		digitalWrite(led_V2, HIGH);
+    		digitalWrite(led_V3, HIGH);
+    		MA3();
+			if (MA3_valide == true)
+			{
+				digitalWrite(led_V4, HIGH);
       			digitalWrite(led_V5, HIGH);
       			delay(500);
       			Serial.print("Coffre deverrouille !");
-      			digitalWrite(led_V6, HIGH);
-    	 }
-      }
-   }
+      			digitalWrite(led_V6, HIGH);}
+			}
+		}
+	}
 }
 
 void secu_2()
@@ -509,4 +510,5 @@ void MA4() {
       }
     }
   }
+
 }
