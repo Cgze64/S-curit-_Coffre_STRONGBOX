@@ -1,11 +1,11 @@
 #include <Keypad.h>
 #include <stdlib.h>
 
-// Définition du code valide
+// Definition of the valid code
 char code_coffre[] = {'6','4','7','1'};
-//Définition du nombre de lignes du pavé numérique
+// Definition of the keypad rows number
 const byte ROWS = 4; 
-//Définition du nombre de colonnes du pavé numérique
+// Definition of the keypad columns number
 const byte COLS = 3; 
 char keys[ROWS][COLS] = 
 {
@@ -15,18 +15,18 @@ char keys[ROWS][COLS] =
   {'#','0','*'}
 };
 
-//Pins connectés aux sorties des lignes du pavé numérique
+// Pins connected to the rows of the keypad
 byte rowPins[ROWS] = {8,7,6,5}; 
-//Pins connectés aux sorties des colonnes du pavé numérique
+// Pins connected to the columns of the keypad
 byte colPins [COLS] = {4,3,2}; 
-// Création de la structure keypad
+// Create the keypad structure
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS ); 
 // Analog input pin that the chest is attached to
 const int analogInPin = A0; 
-// value read from the pot
+// Value read from the potentiometer
 int chestValue = 0; 
 
-// Configuration des LEDs pour l'alerte et le succès
+// LED configuration for alert and success
 const int led_R1 = 13;
 const int led_R2 = 12;
 const int led_R3 = 11;
@@ -39,7 +39,7 @@ const int led_V4 = 17;
 const int led_V5 = 18;
 const int led_V6 = 19;
 
-//Questions et réponses correctes
+// Questions and correct answers
 const char questions[4] = 
 {
   "Quelle est la capitale de la France ? (1: Paris, 2: Lyon, 3: Marseille, 4: Toulouse) \n",
@@ -47,16 +47,16 @@ const char questions[4] =
   "Quel est le plus grand pays en superficie ? (1: Chine, 2: Etats-Unis, 3: Canada, 4: Russie) \n",
   "Quelle est votre situation ? (1: Marie(e), 2: Celibataire, 3: Enfant(s), 4: Separe(e)) \n"
 };
- // Indices des réponses correctes
+// Indices of the correct answers
 const int correctAnswer[4] = {1, 3, 4, 2}; 
 
-//Compteur
+// Counters
 int compteur = 0;
 int nb_erreur = 0;
 char code_entre[] = {'0','0','0','0'};
 bool code_correct = false;
 
-//
+// Authentication flags
 bool MA1_valide = false;
 bool MA2_valide = false;
 bool MA3_valide = false;
@@ -80,24 +80,22 @@ void setup()
 
 void loop()
 {
- chestValue = analogRead(analogInPin); // Lecture de la valeur analogique
-  if (chestValue >= 174 && chestValue <= 182) // Modèle 1
+  chestValue = analogRead(analogInPin); // Read the analog value
+  if (chestValue >= 174 && chestValue <= 182) // Model 1
   { 
     resetLeds();
     Serial.println("Le code et la carte correspondent.");
     digitalWrite(led_V1, HIGH);
-    secu_4(); // Lancer la procédure d'authentification pour ce modèle
+    secu_4(); // Start authentication procedure for this model
   } 
-  
-  else if (chestValue >= 306 && chestValue <= 314)//modèle 2
+  else if (chestValue >= 306 && chestValue <= 314) // Model 2
   {
     resetLeds();
     Serial.println("Le code et la carte correspondent.\n");
     digitalWrite(led_V1, HIGH);
     secu_4();   
   }
-  
-  else if (chestValue >= 386 && chestValue <= 394)//modèle 3
+  else if (chestValue >= 386 && chestValue <= 394) // Model 3
   {
     resetLeds();
     Serial.println("Le code et la carte correspondent.\n");
@@ -105,8 +103,7 @@ void loop()
     delay(500);
     secu_2();
   }
-  
-  else if (chestValue >= 474 && chestValue <= 483)//modèle 4
+  else if (chestValue >= 474 && chestValue <= 483) // Model 4
   {
     resetLeds();
     Serial.println("Le code et la carte correspondent.\n");
@@ -114,8 +111,7 @@ void loop()
     delay(500);
     secu_2();
   }
-  
-  else if (chestValue >= 517 && chestValue <= 525)//modèle 5
+  else if (chestValue >= 517 && chestValue <= 525) // Model 5
   {
     resetLeds();
     Serial.println("Le code et la carte correspondent.\n");
@@ -123,8 +119,7 @@ void loop()
     delay(500);
     secu_2();
   }
-  
-  else if (chestValue >= 553 && chestValue <= 561)//modèle 6
+  else if (chestValue >= 553 && chestValue <= 561) // Model 6
   {
     resetLeds();
     Serial.println("Le code et la carte correspondent.\n");
@@ -132,8 +127,7 @@ void loop()
     delay(500);
     secu_3();
   }
-  
-  else if (chestValue >= 626 && chestValue <= 634)//modèle 7
+  else if (chestValue >= 626 && chestValue <= 634) // Model 7
   {
     resetLeds();
     Serial.println("Le code et la carte correspondent.\n");
@@ -141,8 +135,7 @@ void loop()
     delay(500);
     secu_3();
   }
-  
-  else if (chestValue >= 688 && chestValue <= 697)//modèle 8
+  else if (chestValue >= 688 && chestValue <= 697) // Model 8
   {
     resetLeds();
     Serial.println("Le code et la carte correspondent.\n");
@@ -150,7 +143,6 @@ void loop()
     delay(500);
     secu_1();
   }
-  
   else
   {
     delay(5000);
@@ -164,24 +156,24 @@ void loop()
 
 void secu_1()
 {
-	if (MA1_valide == false)
-	{
+  if (MA1_valide == false)
+  {
     MA1();
-    	if (MA3_valide == false)
-    	{
-    		digitalWrite(led_V2, HIGH);
-    		digitalWrite(led_V3, HIGH);
-    		MA3();
-			if (MA3_valide == true)
-			{
-				digitalWrite(led_V4, HIGH);
-      			digitalWrite(led_V5, HIGH);
-      			delay(500);
-      			Serial.print("Coffre deverrouille !");
-      			digitalWrite(led_V6, HIGH);}
-			}
-		}
-	}
+    if (MA3_valide == false)
+    {
+      digitalWrite(led_V2, HIGH);
+      digitalWrite(led_V3, HIGH);
+      MA3();
+      if (MA3_valide == true)
+      {
+        digitalWrite(led_V4, HIGH);
+        digitalWrite(led_V5, HIGH);
+        delay(500);
+        Serial.print("Coffre deverrouille !");
+        digitalWrite(led_V6, HIGH);
+      }
+    }
+  }
 }
 
 void secu_2()
@@ -190,44 +182,46 @@ void secu_2()
   {
     MA1();
     if (MA4_valide == false)
-  	{
-    digitalWrite(led_V2, HIGH);
-    digitalWrite(led_V3, HIGH);
-    MA4();
+    {
+      digitalWrite(led_V2, HIGH);
+      digitalWrite(led_V3, HIGH);
+      MA4();
       if (MA4_valide == true)
       {
-      digitalWrite(led_V4, HIGH);
-      digitalWrite(led_V5, HIGH);
-      delay(500);
-      Serial.print("Coffre deverrouille !");
-      digitalWrite(led_V6, HIGH);
+        digitalWrite(led_V4, HIGH);
+        digitalWrite(led_V5, HIGH);
+        delay(500);
+        Serial.print("Coffre deverrouille !");
+        digitalWrite(led_V6, HIGH);
       }
     }
   }
 }
 
-void secu_3(){
+void secu_3()
+{
   if (MA2_valide == false)
   {
     MA2();
     if (MA4_valide == false)
     {
-    	digitalWrite(led_V2, HIGH);
-    	digitalWrite(led_V3, HIGH);
-    	MA4();
-    	if (MA4_valide == true)
-    	{
-      		digitalWrite(led_V4, HIGH);
-      		digitalWrite(led_V5, HIGH);
-      		delay(500);
-      		Serial.print("Coffre deverrouille !");
-      		digitalWrite(led_V6, HIGH);
-	  }
-	}
+      digitalWrite(led_V2, HIGH);
+      digitalWrite(led_V3, HIGH);
+      MA4();
+      if (MA4_valide == true)
+      {
+        digitalWrite(led_V4, HIGH);
+        digitalWrite(led_V5, HIGH);
+        delay(500);
+        Serial.print("Coffre deverrouille !");
+        digitalWrite(led_V6, HIGH);
+      }
+    }
   }
 }
 
-void secu_4(){
+void secu_4()
+{
   if (MA1_valide == false)
   {
     MA1();
@@ -258,81 +252,88 @@ void secu_4(){
   }
 }
 
-//Authentification par questions
-void MA1() 
+// Authentication by questions
+void MA1()
 {
   int questionIndex = 0;
- while (MA1_valide==false)
-    {
+  while (MA1_valide == false)
+  {
     poserQuestion(questionIndex);
     char key = attendreReponse();
 
-    if (verifierReponse(key - '0', questionIndex)) {
+    if (verifierReponse(key - '0', questionIndex)) 
+    {
       Serial.println("Bonne reponse !");
       questionIndex++;
-      if(questionIndex ==1)
+      if (questionIndex == 1)
+      {
+        digitalWrite(led_R1, HIGH);
+      }
+      if (questionIndex == 2)
+      {
+        digitalWrite(led_R1, HIGH);
+        digitalWrite(led_R2, HIGH);
+      }
+      if (questionIndex == 3)
+      {
+        digitalWrite(led_R1, HIGH);
+        digitalWrite(led_R2, HIGH);
+        digitalWrite(led_R3, HIGH);
+      }
+      if (questionIndex == 4) 
+      {
+        Serial.println("Toutes les reponses sont correctes. Prochaine etape d'authentification.");
+        MA1_valide = true;
+        // Restart from the first question
+        questionIndex = 0;  
+        digitalWrite(led_R1, HIGH);
+        digitalWrite(led_R2, HIGH);
+        digitalWrite(led_R3, HIGH);
+        digitalWrite(led_R4, HIGH);
+        delay(500);
+        resetLeds();
+      }
+    }
+    else
     {
-      digitalWrite(led_R1, HIGH);
-    }
-    if(questionIndex ==2)
-    {
-      digitalWrite(led_R1, HIGH);
-      digitalWrite(led_R2, HIGH);
-    }
-    if(questionIndex ==3)
-    {
-      digitalWrite(led_R1, HIGH);
-      digitalWrite(led_R2, HIGH);
-      digitalWrite(led_R3, HIGH);
-    }
-    if (questionIndex == 4) 
-    {
-      Serial.println("Toutes les reponses sont correctes. Prochaine etape d'authentification.");
-      MA1_valide = true;
-      // Recommence depuis la première question
-      questionIndex = 0;  
-      digitalWrite(led_R1, HIGH);
-      digitalWrite(led_R2, HIGH);
-      digitalWrite(led_R3, HIGH);
-      digitalWrite(led_R4, HIGH);
-      delay(500);
-      resetLeds();
-    }
-    }
-      else {
       Serial.println("Mauvaise reponse ! Alerte activee.");
       alerter();
       nb_erreur++;
-      if (nb_erreur == 4) {
+      if (nb_erreur == 4) 
+      {
         Serial.println("4 erreurs, blocage de 30 secondes.");
-        // Bloque pendant 30 secondes
+        // Lock for 30 seconds
         delay(30000); 
         nb_erreur = 0;
       }
-    
-      
     }
-	}
   }
+}
 
-void poserQuestion(int index) {
+void poserQuestion(int index)
+{
   Serial.println(questions[index]);
 }
 
-char attendreReponse() {
+char attendreReponse()
+{
   char key;
-  while ((key = keypad.getKey()) == NO_KEY) {
-   // Attente de la réponse
+  while ((key = keypad.getKey()) == NO_KEY) 
+  {
+    // Wait for the response
   }
   return key;
 }
 
-bool verifierReponse(int reponse, int questionIndex) {
+bool verifierReponse(int reponse, int questionIndex)
+{
   return reponse == correctAnswer[questionIndex];
 }
 
-void alerter() {
-  for (int i = 0; i < 6; i++) {
+void alerter()
+{
+  for (int i = 0; i < 6; i++) 
+  {
     digitalWrite(led_R1, HIGH);
     digitalWrite(led_R2, HIGH);
     digitalWrite(led_R3, HIGH);
@@ -343,109 +344,123 @@ void alerter() {
   }
 }
 
-void resetLeds() {
+void resetLeds()
+{
   digitalWrite(led_R1, LOW);
   digitalWrite(led_R2, LOW);
   digitalWrite(led_R3, LOW);
   digitalWrite(led_R4, LOW);
 }
 
-//Authentification par un code qui change au cours du temps
-void MA2() {
+// Authentication by a code that changes over time
+void MA2()
+{
   char key = keypad.getKey();
-  while(MA2_valide==false)
+  while (MA2_valide == false)
   {
     Serial.print("Veuillez entrer votre code d'acces \n");
-    while (code_correct == false) // Attente tant qu'aucune touche n'est appuyée
-  {
-  // Lecture des touches pressées sur le pavé numérique et stockage du code saisi
-  key = keypad.getKey();
-  if (key != NO_KEY) {
-    compteur++;
-    code_entre[compteur - 1] = key; 
-  }
-  
-  if (compteur == 1) { 
-  //Le premier chiffre du code est entré
-    digitalWrite(led_R1, HIGH);
-  }
-  
-  if (compteur == 2) { 
-    digitalWrite(led_R1, HIGH);
-    // Le deuxième chiffre du code est entré
-    digitalWrite(led_R2, HIGH); 
-  }
-  
-  if (compteur == 3) { 
-    digitalWrite(led_R1, HIGH);
-    digitalWrite(led_R2, HIGH);
-    // Le troisième chiffre du code est entré
-    digitalWrite(led_R3, HIGH);
-  }
-
-  if (compteur == 4) { 
-    digitalWrite(led_R1, HIGH);
-    digitalWrite(led_R2, HIGH);
-    digitalWrite(led_R3, HIGH);
-    // Le quatrième chiffre du code est entré
-    digitalWrite(led_R4, HIGH);
-    code_correct = true;
-    
-    // Vérification du code
-    for (int i = 0; i < 4; i++) { 
-      if (code_entre[i] != code_coffre[i]) {
-        code_correct = false;
+    while (code_correct == false)
+    {
+      // Wait while no key is pressed
+      key = keypad.getKey();
+      if (key != NO_KEY) 
+      {
+        compteur++;
+        code_entre[compteur - 1] = key; 
       }
-    }
       
-    if (code_correct == true) {
-      MA2_valide=true;
-      Serial.print("Code bon \n");
-      delay(500);
-      resetLeds();
-    } 
-    else {
-      // Si le code est incorrect, les leds rouges clignotent
-      for (int j = 0; j < 6; j++) { 
+      if (compteur == 1) 
+      { 
+        // First digit entered
+        digitalWrite(led_R1, HIGH);
+      }
+      
+      if (compteur == 2) 
+      { 
+        digitalWrite(led_R1, HIGH);
+        // Second digit entered
+        digitalWrite(led_R2, HIGH); 
+      }
+      
+      if (compteur == 3) 
+      { 
+        digitalWrite(led_R1, HIGH);
+        digitalWrite(led_R2, HIGH);
+        // Third digit entered
+        digitalWrite(led_R3, HIGH);
+      }
+
+      if (compteur == 4) 
+      { 
         digitalWrite(led_R1, HIGH);
         digitalWrite(led_R2, HIGH);
         digitalWrite(led_R3, HIGH);
+        // Fourth digit entered
         digitalWrite(led_R4, HIGH);
-        delay(500);
-      
-        digitalWrite(led_R1, LOW);
-        digitalWrite(led_R2, LOW);
-        digitalWrite(led_R3, LOW);
-        digitalWrite(led_R4, LOW);
-        delay(500);
+        code_correct = true;
+        
+        // Check the code
+        for (int i = 0; i < 4; i++) 
+        { 
+          if (code_entre[i] != code_coffre[i]) 
+          {
+            code_correct = false;
+          }
+        }
+          
+        if (code_correct == true) 
+        {
+          MA2_valide = true;
+          Serial.print("Code bon \n");
+          delay(500);
+          resetLeds();
+        } 
+        else 
+        {
+          // If the code is wrong, red LEDs blink
+          for (int j = 0; j < 6; j++) 
+          { 
+            digitalWrite(led_R1, HIGH);
+            digitalWrite(led_R2, HIGH);
+            digitalWrite(led_R3, HIGH);
+            digitalWrite(led_R4, HIGH);
+            delay(500);
+          
+            digitalWrite(led_R1, LOW);
+            digitalWrite(led_R2, LOW);
+            digitalWrite(led_R3, LOW);
+            digitalWrite(led_R4, LOW);
+            delay(500);
+          }
+          
+          compteur = 0;
+          nb_erreur++;
+          Serial.print("Code faux, plus que ");
+          Serial.print(4 - nb_erreur);
+          Serial.print(" essais avant blocage. \n");
+        }
       }
       
-      compteur = 0;
-      nb_erreur++;
-      Serial.print("Code faux, plus que ");
-      Serial.print(4 - nb_erreur);
-      Serial.print(" essais avant blocage. \n");
-    }
-  }
-  
-  if (nb_erreur == 4) {
-    Serial.print("4 erreurs, blocage pendant 30 secondes.");
-    delay(30000);
-    nb_erreur = 0;
-  }
+      if (nb_erreur == 4) 
+      {
+        Serial.print("4 erreurs, blocage pendant 30 secondes.");
+        delay(30000);
+        nb_erreur = 0;
+      }
     }
   }
 }
 
-// Fonction pour simuler le scan rétinien
-void MA3() {
+// Function to simulate retina scan
+void MA3()
+{
   Serial.println("Simulation du scan retinien en cours...");
-  delay(1000); // Délai pour simuler le temps du scan
+  delay(1000); // Delay to simulate scan time
 
   bool retineReconnu = verifierRetine();
   if (retineReconnu) 
   {
-    MA3_valide=true;
+    MA3_valide = true;
     afficherAccesAutorise();
   } 
   else 
@@ -454,29 +469,34 @@ void MA3() {
   }
 }
 
-// Fonction pour simuler la vérification de la rétine
-bool verifierRetine() {
-  // Simule un scan rétinien (retourne true pour simuler une rétine reconnue)
+// Function to simulate retina verification
+bool verifierRetine()
+{
+  // Simulate a retina scan (returns true to simulate recognized retina)
   return true;
 }
 
-// Fonction pour afficher l'accès autorisé et allumer la LED verte
-void afficherAccesAutorise() {
+// Function to show authorized access and turn on green LED
+void afficherAccesAutorise()
+{
   Serial.println("Retine reconnue. Acces autorise.");
   delay(500);
   MA3_valide = true;
 }
 
-// Fonction pour afficher l'alerte en cas de rétine inconnue et faire clignoter les LEDs rouges
-void afficherAlerte() {
+// Function to show alert in case of unknown retina and blink red LEDs
+void afficherAlerte()
+{
   Serial.println("Retine inconnue. Alerte activee !");
-  for (int j = 0; j < 6; j++) {
+  for (int j = 0; j < 6; j++) 
+  {
     clignoterLEDsRouges();
   }
 }
 
-// Fonction pour faire clignoter les LEDs rouges
-void clignoterLEDsRouges() {
+// Function to blink the red LEDs
+void clignoterLEDsRouges()
+{
   digitalWrite(led_R1, HIGH);
   digitalWrite(led_R2, HIGH);
   digitalWrite(led_R3, HIGH);
@@ -489,26 +509,26 @@ void clignoterLEDsRouges() {
   delay(500);
 }
 
-// Fonction pour simuler le scan digital
-void MA4() {
+// Function to simulate fingerprint scan
+void MA4()
+{
   Serial.println("Scan digital en cours... Veuillez appuyer pour simuler l'empreinte digitale.");
-  while (MA4_valide==false)
+  while (MA4_valide == false)
   {  
     char key = keypad.getKey();
     if (key != NO_KEY) 
     {
-      if (key == '1')// Définie '1' comme empreinte valide 
-      {  
-        Serial.println("Empreinte reconnue. Acces autorise.");
+      if (key == '1') // Define '1
+	  {  
+        Serial.println("Fingerprint recognized. Access granted.");
         delay(500);
-        MA4_valide=true;
+        MA4_valide = true;
       } 
       else 
       {
-        Serial.println("Empreinte inconnue ! Acces refuse.");
+        Serial.println("Fingerprint unknown! Access denied.");
         alerter();
       }
     }
   }
-
 }
