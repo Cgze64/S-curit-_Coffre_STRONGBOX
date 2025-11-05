@@ -13,10 +13,10 @@ Ce projet, réalisé en début de première année CPI au CESI, implémente un s
 ### Modes d'authentification :
 **MA1** : Quiz de sécurité 4 questions personnelles avec choix multiples (4 réponses fausses entrainent 30 secondes de verrouillage avec un clignotement de LED) :
 
-- Prénom du chien
-- Année de découverte de l'Amérique
-- Prénom de la belle-mère
-- Note au bac de philosophie
+- Date de naissance de l'agent M
+- Age de l'agent M
+- Ville de naissance de l'agent M
+- Couleur préférée de l'agent M
 
 **MA2** : Code PIN Saisie d'un code à 4 chiffres (par défaut : 2294) Sécurité : 4 tentatives erronées déclenchent un blocage de 30 secondes avec clignotement des LEDs
 
@@ -39,10 +39,10 @@ Safe Access: Upon successful completion, blue LED lights up and safe opens for 1
 
 **MA1** : Security Quiz 4 personal questions with multiple-choice answers (4 wrong attempts trigger a 30-second lockout with LED blinking):
 
-- Dog's name
-- Discovery of America date
-- Mother-in-law's first name
-- Philosophy exam grade Security
+- Agent M's date of birth
+- Agent M's age
+- Agent M's city of birth
+- Agent M's favorite color
 
 **MA2** : PIN Code 4-digit code entry (default: 2294) Security
 
